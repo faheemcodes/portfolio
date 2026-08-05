@@ -2,7 +2,7 @@
 // without touching component markup.
 
 export const profile = {
-  name: "Faheem",
+  name: "Faheem Ahmed",
   role: "Full-Stack Developer",
   status: "Final-year Software Engineering Student",
   email: "faheem.webwork@gmail.com",

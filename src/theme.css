@@ -1,26 +1,29 @@
 /* ==========================================================================
    FAHEEM — PORTFOLIO DESIGN SYSTEM
-   Concept: "Schematic" — an engineer's blueprint margin runs the length of
-   the page; sections wire into it like components on a circuit trace.
+   Concept: "Magazine Glass" — A premium, high-contrast editorial look with
+   glassmorphism effects, huge typography, and smooth micro-animations.
    ========================================================================== */
 
 :root {
   /* ---- Dark theme tokens (default) ---- */
-  --bg-base: #0b0e14;
-  --bg-panel: #12161f;
-  --bg-panel-raised: #161b26;
-  --bg-inset: #0e1117;
-  --line: #232936;
-  --line-strong: #2f3848;
-  --text-primary: #e8eaed;
-  --text-secondary: #9aa3b2;
-  --text-muted: #6b7385;
-  --accent: #d98e4a;
-  --accent-soft: rgba(217, 142, 74, 0.14);
-  --accent-strong: #f0a560;
-  --signal: #4fa88c;
-  --signal-soft: rgba(79, 168, 140, 0.14);
-  --danger: #c96a5a;
+  --bg-base: #111111;
+  --bg-panel: rgba(26, 26, 26, 0.4);
+  --bg-panel-raised: rgba(36, 36, 36, 0.6);
+  --bg-inset: rgba(15, 15, 15, 0.5);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.2);
+  
+  --text-primary: #ebebeb;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  
+  --accent: #e5dac3;
+  --accent-soft: rgba(229, 218, 195, 0.1);
+  --accent-strong: #ffffff;
+  
+  --signal: #10b981;
+  --signal-soft: rgba(16, 185, 129, 0.14);
+  --danger: #ef4444;
 
   /* ---- Typography ---- */
   --font-display: "Space Grotesk", "Inter", sans-serif;
@@ -28,34 +31,50 @@
   --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
 
   /* ---- Layout ---- */
-  --rail-x: 48px;
-  --container-max: 1180px;
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 32px rgba(0, 0, 0, 0.35);
+  --rail-x: 0px; /* Removed rail for the magazine layout */
+  --container-max: 1200px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --shadow-panel: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-hero-tight: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.6));
+  --shadow-hero-ambient: drop-shadow(0 32px 80px rgba(0, 0, 0, 0.8));
+  --backdrop-blur: blur(12px);
 
   color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --bg-base: #f5f3ee;
-  --bg-panel: #ffffff;
-  --bg-panel-raised: #ffffff;
-  --bg-inset: #ece9e2;
-  --line: #ddd8cc;
-  --line-strong: #c7c1b2;
-  --text-primary: #1c1f26;
-  --text-secondary: #565d6b;
-  --text-muted: #888e9b;
-  --accent: #b96b27;
-  --accent-soft: rgba(185, 107, 39, 0.1);
-  --accent-strong: #9c5a1f;
-  --signal: #2f7d63;
-  --signal-soft: rgba(47, 125, 99, 0.1);
-  --danger: #a8442f;
-  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 12px 28px rgba(28, 31, 38, 0.08);
+  /* Beige background instead of white */
+  --bg-base: #f4f1ea; 
+  --bg-panel: rgba(255, 255, 255, 0.5); 
+  --bg-panel-raised: rgba(255, 255, 255, 0.8);
+  --bg-inset: rgba(230, 226, 216, 0.5); 
+  
+  /* Navy blue lines */
+  --line: rgba(11, 26, 48, 0.08);
+  --line-strong: rgba(11, 26, 48, 0.15);
+  
+  /* Navy blue text instead of black */
+  --text-primary: #0b1a30; 
+  --text-secondary: #2c3e50; 
+  --text-muted: #64748b; 
+  
+  /* Steel blue accents instead of orange */
+  --accent: #4682b4; 
+  --accent-soft: rgba(70, 130, 180, 0.1);
+  --accent-strong: #315f86; 
+  
+  --signal: #059669;
+  --signal-soft: rgba(5, 150, 105, 0.1);
+  --danger: #dc2626;
+  
+  /* Navy blue tinted shadows */
+  --shadow-panel: 0 8px 32px 0 rgba(11, 26, 48, 0.07);
+  --shadow-hero-tight: drop-shadow(0 12px 24px rgba(11, 26, 48, 0.2));
+  --shadow-hero-ambient: drop-shadow(0 32px 80px rgba(11, 26, 48, 0.15));
   color-scheme: light;
 }
+
 
 * {
   box-sizing: border-box;
@@ -264,121 +283,146 @@ section {
 }
 
 /* ==========================================================================
-   NAVBAR
+   NAVBAR (FLOATING PILL DESIGN)
    ========================================================================== */
 
 .site-nav {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  background: color-mix(in srgb, var(--bg-base) 88%, transparent);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  width: 90%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; /* Space between pill and mobile menu */
 }
 
-.site-nav .shell-container {
+.nav-pill {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  background: var(--bg-panel-raised);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 6px 6px 6px 20px; /* Extra padding on left for the brand name */
+  width: 100%;
+  box-shadow: var(--shadow-panel);
 }
 
-.brand {
+.nav-brand {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.1rem;
   letter-spacing: -0.01em;
+  color: var(--text-primary);
+  text-decoration: none;
   display: flex;
   align-items: baseline;
-  gap: 8px;
 }
 
-.brand__dot {
+.nav-brand__dot {
   color: var(--accent);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-theme-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  color: var(--bg-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-theme-btn:hover {
+  transform: scale(0.95);
+  opacity: 0.9;
 }
 
 .nav-links {
   display: none;
   align-items: center;
-  gap: 32px;
+  gap: 24px;
 }
 
-@media (min-width: 880px) {
+@media (min-width: 768px) {
   .nav-links {
     display: flex;
   }
 }
 
 .nav-links a {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   color: var(--text-secondary);
   transition: color 0.2s ease;
   position: relative;
-  padding: 4px 0;
+  text-decoration: none;
 }
 
 .nav-links a:hover {
   color: var(--text-primary);
 }
 
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.nav-contact-pill {
+  display: none;
+  background: var(--text-primary);
+  color: var(--bg-base);
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-/* Theme toggle styled as a hardware switch */
-.theme-switch {
-  width: 52px;
-  height: 28px;
-  border-radius: 30px;
-  border: 1px solid var(--line-strong);
-  background: var(--bg-inset);
-  position: relative;
-  cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
-  transition: border-color 0.25s ease;
+.nav-contact-pill:hover {
+  transform: scale(0.97);
+  opacity: 0.9;
 }
 
-.theme-switch:hover {
-  border-color: var(--accent);
-}
-
-.theme-switch__thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
-  transform: translateX(0);
-  color: #0b0e14;
-}
-
-[data-theme="light"] .theme-switch__thumb {
-  transform: translateX(24px);
+@media (min-width: 768px) {
+  .nav-contact-pill {
+    display: block;
+  }
 }
 
 .btn-mobile-toggle {
   background: transparent;
-  border: 1px solid var(--line-strong);
   color: var(--text-primary);
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-sm);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.btn-mobile-toggle:hover {
+  border-color: var(--text-primary);
 }
 
 @media (min-width: 880px) {
@@ -388,14 +432,21 @@ section {
 }
 
 .mobile-menu {
-  border-bottom: 1px solid var(--line);
-  background: var(--bg-panel);
+  width: 100%;
+  background: var(--bg-panel-raised);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-panel);
 }
 
 .mobile-menu a {
   display: block;
   padding: 14px 24px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-weight: 500;
+  text-decoration: none;
   font-size: 13px;
   letter-spacing: 0.06em;
   color: var(--text-secondary);
@@ -454,134 +505,404 @@ section {
 }
 
 /* ==========================================================================
-   HERO
+/* ==========================================================================
+   HERO (MAGAZINE STYLE)
    ========================================================================== */
 
-.hero {
-  padding-top: 110px;
-  padding-bottom: 100px;
+.hero-modern {
+  /* Force dark theme for the hero section regardless of global theme */
+  --bg-base: #111111;
+  --text-primary: #ebebeb;
+  --text-secondary: #a3a3a3;
+  --shadow-hero-tight: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.6));
+  --shadow-hero-ambient: drop-shadow(0 32px 80px rgba(0, 0, 0, 0.8));
+
   position: relative;
-  overflow: hidden;
-}
-
-.hero__grid-bg {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 30%, black 10%, transparent 70%);
-  mask-image: radial-gradient(ellipse 70% 60% at 60% 30%, black 10%, transparent 70%);
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.hero__status {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--signal);
-  background: var(--signal-soft);
-  border: 1px solid color-mix(in srgb, var(--signal) 35%, transparent);
-  padding: 7px 14px 7px 11px;
-  border-radius: 20px;
-  margin-bottom: 28px;
-}
-
-.hero__status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--signal);
-  box-shadow: 0 0 0 0 var(--signal-soft);
-  animation: pulse-dot 2.2s infinite;
-}
-
-@keyframes pulse-dot {
-  0% { box-shadow: 0 0 0 0 rgba(79, 168, 140, 0.5); }
-  70% { box-shadow: 0 0 0 7px rgba(79, 168, 140, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(79, 168, 140, 0); }
-}
-
-.hero__headline {
-  font-size: clamp(2.3rem, 5vw, 3.85rem);
-  line-height: 1.08;
-  max-width: 880px;
-  margin-bottom: 26px;
-}
-
-.hero__headline em {
-  font-style: normal;
-  color: var(--accent);
-}
-
-.hero__sub {
-  font-size: 1.12rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin-bottom: 40px;
-}
-
-.hero__sub strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.hero__cta-row {
+  height: 100vh; /* Reverted to 100vh since the new pill navbar floats and doesn't take up document space */
+  min-height: 600px; /* Prevent it from getting too squished on very tiny screens */
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 64px;
-}
-
-.hero__meta-strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-base); /* Responsive background color */
+  color: var(--text-primary); /* Responsive text color */
   overflow: hidden;
-  max-width: 680px;
-  background: var(--bg-panel);
+  padding: 40px 24px; /* Reduced vertical padding slightly so corner elements have room */
+  box-sizing: border-box; /* Ensure padding doesn't add to the 100vh height */
 }
 
-.hero__meta-cell {
-  padding: 18px 20px;
-  border-right: 1px solid var(--line);
+/* Bottom vignette to smoothly fade out the bottom of the portrait and text 
+   Since the hero is strictly dark mode, this prevents sharp cuts at the screen edge! */
+.hero-modern::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10%;
+  background: linear-gradient(to top, var(--bg-base) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
 }
 
-.hero__meta-cell:last-child {
-  border-right: none;
+/* Four corners */
+.hero-corner {
+  position: absolute;
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary); /* Responsive corner text */
+  z-index: 10;
+  opacity: 0;
+  animation: heroCornerReveal 1s ease 1.2s forwards;
+  display: none; /* Hide on mobile so it doesn't collide with the pill navbar */
 }
 
-.hero__meta-value {
-  font-family: var(--font-mono);
-  font-size: 1.3rem;
-  color: var(--accent);
+@media (min-width: 768px) {
+  .hero-corner {
+    display: block;
+  }
+}
+
+.hero-corner--tl {
+  top: 40px;
+  left: 40px;
+}
+
+.hero-corner--tr {
+  top: 40px;
+  right: 40px;
+}
+
+.hero-corner--bl {
+  bottom: 40px;
+  left: 40px;
+}
+
+.hero-corner--br {
+  bottom: 40px;
+  right: 40px;
+}
+
+.hero-arrow-link {
+  display: flex;
+  align-items: center;
+  gap: 0; /* Removed gap so the line and arrow connect seamlessly */
+  color: var(--text-primary); /* Responsive arrow color */
+  transition: opacity 0.3s ease;
+}
+
+.hero-arrow-link:hover {
+  opacity: 0.7;
+}
+
+.hero-arrow-line {
+  width: 48px;
+  height: 1.5px; /* Matches the SVG strokeWidth="1.5" perfectly */
+  background-color: currentColor;
+}
+
+/* Center Composition */
+.hero-center-composition {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ==========================================================================
+   HERO ANIMATIONS
+   ========================================================================== */
+@keyframes heroTextReveal {
+  0% { 
+    opacity: 0; 
+    transform: translate(-50%, -40%) scale(0.95); 
+    filter: blur(8px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(1); 
+    filter: blur(0);
+  }
+}
+
+@keyframes heroImageReveal {
+  0% { 
+    opacity: 0; 
+    transform: scale(1.25) translateY(12%); 
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1.3) translateY(8%); 
+    filter: var(--shadow-hero-tight) var(--shadow-hero-ambient);
+  }
+}
+
+@keyframes heroCornerReveal {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* The giant "PORTFOLIO" text */
+.hero-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Six Caps", sans-serif;
+  font-size: clamp(8rem, 35vw, 32rem); /* Massive on desktop */
+  font-weight: 400; /* Six Caps is normally 400 weight */
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0;
+  line-height: 1; /* Reset to 1 so the bounding box fits the font fully, preventing the mask from clipping it */
+  white-space: nowrap;
+  animation: heroTextReveal 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  
+  /* Apply mask to the text so the edges fade out, leaving the center highlighted.
+     Because this is on the text and not the container, the portrait image stays 100% crisp! */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: clamp(5rem, 24vw, 8rem); /* Scaled down for mobile only */
+  }
+}
+
+/* Background text (solid) */
+.hero-title--back {
+  color: var(--text-primary); /* Responsive giant text */
+  z-index: 1;
+}
+
+/* Foreground text (outline only) */
+.hero-title--front {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--text-primary); /* Responsive outline text */
+  z-index: 3;
+  pointer-events: none; /* Let clicks pass through to the image */
+}
+
+/* The portrait image */
+.hero-image-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 800px; /* Increased from 500px so it matches the huge typography */
+  display: flex;
+  justify-content: center;
+}
+
+.hero-profile-image {
+  width: 100%;
+  height: auto;
+  max-height: 95vh;
+  object-fit: contain;
   display: block;
-  margin-bottom: 2px;
+  transform: scale(1.3) translateY(8%); /* Scale up and shift slightly down to cover text bounds */
+  
+  /* Smoothly fade the bottom of the portrait so it blends seamlessly when floating */
+  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  
+  /* Layered shadows: dynamic variables for dark vs light mode */
+  filter: var(--shadow-hero-tight) var(--shadow-hero-ambient);
+  opacity: 0;
+  animation: heroImageReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
 }
 
-.hero__meta-label {
-  font-size: 11.5px;
+@keyframes heroImageRevealMobile {
+  0% { 
+    opacity: 0; 
+    transform: scale(1.3) translateY(4%); 
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1.4) translateY(0); /* Zoomed in an additional 15% */
+    filter: var(--shadow-hero-tight) var(--shadow-hero-ambient);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-modern {
+    padding-bottom: 0; /* Remove bottom padding so image can sit flush */
+  }
+  
+  .hero-center-composition {
+    height: 100%;
+    /* Let it inherit align-items: center for perfectly balanced vertical placement */
+  }
+
+  .hero-title {
+    font-size: clamp(8rem, 35vh, 18rem); /* Much bigger text for vertical mobile layout */
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: translate(-50%, -50%) rotate(180deg); /* Reads bottom to top, common in editorial design */
+    
+    /* Restore the original deep shadow (25%) specifically for mobile view */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+  }
+
+  .hero-profile-image {
+    max-height: 90vh; /* Allowed it to be taller so it's bigger overall */
+    animation: heroImageRevealMobile 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+    transform-origin: bottom center;
+  }
+}
+
+.hero-image-placeholder {
+  width: 300px;
+  height: 400px;
+  border: 1px dashed #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   ABOUT EDITORIAL (MAGAZINE STYLE)
+   ========================================================================== */
+
+.about-editorial {
+  padding: 120px 24px 100px;
+  background-color: var(--bg-base);
+  position: relative;
+  z-index: 20;
+  border-top: 1px solid var(--line);
+}
+
+.about-editorial__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 80px;
+}
+
+@media (min-width: 992px) {
+  .about-editorial {
+    padding: 180px 48px 140px; /* Increased top padding so content clears the fixed navbar properly */
+  }
+  
+  .about-editorial__container {
+    grid-template-columns: 4fr 5fr; /* Left side slightly narrower than right */
+    gap: 120px;
+    align-items: flex-start;
+  }
+}
+
+/* Left Column */
+.about-editorial__left {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.about-editorial__heading {
+  font-family: "Six Caps", sans-serif;
+  font-size: clamp(8rem, 15vw, 16rem);
+  font-weight: 400;
+  line-height: 0.95; /* Increased from 0.8 so the lines 'THE' and 'VISION' don't overlap vertically */
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.about-editorial__stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  border-top: 2px solid var(--text-primary);
+  padding-top: 32px;
+}
+
+@media (min-width: 768px) {
+  .about-editorial__stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.editorial-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editorial-stat__value {
+  font-family: var(--font-mono);
+  font-size: clamp(1.8rem, 3vw, 2.5rem); /* Reduced max size slightly so 'Final Yr' fits on one line */
+  color: var(--accent);
+  font-weight: bold;
+  line-height: 1;
+}
+
+.editorial-stat__label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+}
+
+/* Right Column */
+.about-editorial__right {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-top: 16px; /* Align slightly down */
+}
+
+.about-editorial__lead {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 300;
+  line-height: 1.3;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.about-editorial__body {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 600px;
+}
+
+.about-editorial__signature {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-left: 2px solid var(--accent);
+  padding-left: 24px;
+}
+
+.sig-name {
+  font-family: "Six Caps", sans-serif;
+  font-size: 3rem;
+  color: var(--text-primary);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sig-title {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   color: var(--text-muted);
-  letter-spacing: 0.04em;
-}
-
-@media (max-width: 575px) {
-  .hero__meta-strip {
-    grid-template-columns: 1fr;
-  }
-  .hero__meta-cell {
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-  }
-  .hero__meta-cell:last-child {
-    border-bottom: none;
-  }
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 /* ==========================================================================
@@ -594,12 +915,17 @@ section {
   border-radius: var(--radius-md);
   padding: 32px 28px;
   height: 100%;
-  transition: border-color 0.25s ease, transform 0.25s ease;
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  box-shadow: var(--shadow-panel);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .domain-card:hover {
   border-color: var(--line-strong);
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  background: var(--bg-panel-raised);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
 }
 
 .domain-card__index {
@@ -652,9 +978,65 @@ section {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--bg-panel);
-  margin-bottom: 28px;
+  margin-bottom: 40px;
   overflow: hidden;
   box-shadow: var(--shadow-panel);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  transition: all 0.3s ease;
+}
+
+.case-study:hover {
+  border-color: var(--line-strong);
+  background: var(--bg-panel-raised);
+  transform: translateY(-4px);
+}
+
+.case-study__inner {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 992px) {
+  .case-study__inner {
+    flex-direction: row;
+  }
+}
+
+.case-study__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.case-study__visual {
+  flex: 0 0 40%;
+  background: var(--bg-inset);
+  border-left: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+@media (max-width: 991px) {
+  .case-study__visual {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+}
+
+.case-study__image-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
 }
 
 .case-study__header {

@@ -1,8 +1,8 @@
 import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
-import SchematicRail from "./components/SchematicRail";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import About from "./components/About";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Experience from "./components/Experience";
@@ -12,10 +12,10 @@ export default function App() {
   return (
     <ThemeProvider>
       <div className="app-shell">
-        <SchematicRail />
         <Navbar />
         <main>
           <Hero />
+          <About />
           <Skills />
           <Projects />
           <Experience />

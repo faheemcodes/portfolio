@@ -1,57 +1,53 @@
 import React from "react";
-import { heroMeta, profile } from "../data/content";
+import { profile } from "../data/content";
 
 export default function Hero() {
   return (
-    <section id="top" className="hero">
-      <div className="hero__grid-bg" />
-      <div className="shell-container">
-        <div className="row">
-          <div className="col-12 col-xl-10">
-            <span className="hero__status">
-              <span className="hero__status-dot" />
-              Open to full-stack & automation engagements
-            </span>
+    <section id="top" className="hero-modern">
+      {/* Corner Details */}
+      <div className="hero-corner hero-corner--tl">
+        {profile.role}
+      </div>
+      <div className="hero-corner hero-corner--tr">
+        <a href="#work" className="hero-arrow-link">
+          <span className="hero-arrow-line"></span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </a>
+      </div>
+      <div className="hero-corner hero-corner--bl">
+        {profile.name}
+      </div>
+      <div className="hero-corner hero-corner--br">
+        {profile.github.replace('https://', '').replace(/\/$/, '')}
+      </div>
 
-            <h1 className="hero__headline">
-              I engineer <em>robust full-stack systems</em> and the automation that keeps them
-              running.
-            </h1>
-
-            <p className="hero__sub">
-              I'm <strong>{profile.name}</strong>, a {profile.role.toLowerCase()} and{" "}
-              {profile.status.toLowerCase()}. I build production-grade platforms on{" "}
-              <strong>Laravel</strong> and <strong>React</strong>, and connect them to{" "}
-              <strong>Python</strong>-driven automation and testing pipelines — so the systems I
-              ship don't just work, they stay working.
-            </p>
-
-            <div className="hero__cta-row">
-              <a href="#work" className="btn-engineered btn-engineered--primary">
-                View Case Studies
-                <span className="btn-engineered__arrow">→</span>
-              </a>
-              <a
-                href={profile.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-engineered btn-engineered--ghost"
-              >
-                GitHub Profile
-                <span className="btn-engineered__arrow">↗</span>
-              </a>
-            </div>
-
-            <div className="hero__meta-strip">
-              {heroMeta.map((item) => (
-                <div className="hero__meta-cell" key={item.label}>
-                  <span className="hero__meta-value mono">{item.value}</span>
-                  <span className="hero__meta-label">{item.label}</span>
-                </div>
-              ))}
-            </div>
+      {/* Center Layout: Text Back, Image, Text Front */}
+      <div className="hero-center-composition">
+        {/* Giant background typography */}
+        <h1 className="hero-title hero-title--back">Portfolio</h1>
+        
+        {/* The user's image goes here. Ensure public/images/profile.png exists! */}
+        <div className="hero-image-wrapper">
+          <img 
+            src="/images/profile.png" 
+            alt="Faheem Portfolio Profile" 
+            className="hero-profile-image" 
+            onError={(e) => {
+              // Fallback if image is missing
+              e.target.style.display = 'none';
+              e.target.nextElementSibling.style.display = 'flex';
+            }}
+          />
+          <div className="hero-image-placeholder" style={{display: 'none'}}>
+            {/* Fallback silhouette if image fails to load */}
+            <div className="hero-silhouette"></div>
           </div>
         </div>
+
+        {/* Transparent outline typography that overlaps the image */}
+        <h1 className="hero-title hero-title--front" aria-hidden="true">Portfolio</h1>
       </div>
     </section>
   );
