@@ -5,7 +5,7 @@
 A production-ready React + Bootstrap portfolio with a dynamic light/dark theme and a "schematic" design language — a blueprint-style margin rail, mono-spaced technical labels, and case studies structured as Problem → Architecture → Result.
 
 ## 👨‍💻 About Me
-**Faheem** | Full-Stack Developer & Final-year Software Engineering Student
+**Faheem Ahmed** | Full-Stack Developer & Final-year Software Engineering Student
 - 📧 **Email:** [faheem.webwork@gmail.com](mailto:faheem.webwork@gmail.com)
 - 🔗 **LinkedIn:** [linkedin.com/in/mr-faheem](https://www.linkedin.com/in/mr-faheem/)
 - 🐙 **GitHub:** [github.com/faheemcodes](https://github.com/faheemcodes/)
