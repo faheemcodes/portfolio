@@ -914,7 +914,6 @@ section {
 .hero-profile-image {
   width: 100%;
   height: auto;
-  aspect-ratio: 920 / 1080;
   max-height: 95vh;
   object-fit: contain;
   display: block;
