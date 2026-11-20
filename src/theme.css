@@ -2286,26 +2286,26 @@ section {
 /* 1. Single Card / Block Reveal with optional --card-delay */
 .reveal {
   opacity: 0;
-  transform: translateY(42px) scale(0.975);
+  transform: translateY(32px);
   transition:
-    opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1) var(--card-delay, 0ms),
-    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1) var(--card-delay, 0ms),
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay, 0ms),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay, 0ms),
     border-color 0.25s ease,
     background-color 0.25s ease;
 }
 
 .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
 /* 2. Staggered Group Reveal (children with .stagger-item animate in sequence via --i) */
 .reveal-group .stagger-item {
   opacity: 0;
-  transform: translateY(36px);
+  transform: translateY(28px);
   transition:
-    opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 145ms),
-    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 145ms);
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 85ms),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 85ms);
 }
 
 .reveal-group.is-visible .stagger-item {
@@ -2317,10 +2317,10 @@ section {
 .domain-card .skill-chip,
 .project-card .skill-chip {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(12px);
   transition:
-    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--card-delay, 0ms) + var(--chip-idx, 0) * 65ms + 280ms),
-    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--card-delay, 0ms) + var(--chip-idx, 0) * 65ms + 280ms),
+    opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-delay, 0ms) + var(--chip-idx, 0) * 45ms + 160ms),
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-delay, 0ms) + var(--chip-idx, 0) * 45ms + 160ms),
     border-color 0.2s ease,
     color 0.2s ease;
 }
@@ -2333,10 +2333,10 @@ section {
 
 .project-card .project-metric {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(14px);
   transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--card-delay, 0ms) + var(--metric-idx, 0) * 90ms + 220ms),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--card-delay, 0ms) + var(--metric-idx, 0) * 90ms + 220ms),
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-delay, 0ms) + var(--metric-idx, 0) * 60ms + 140ms),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-delay, 0ms) + var(--metric-idx, 0) * 60ms + 140ms),
     border-color 0.2s ease;
 }
 
@@ -2393,42 +2393,6 @@ section {
 
 .project-card__drawer {
   animation: drawerSlideDown 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-/* ==========================================================================
-   MOBILE VIEW: DISABLE SCROLL ANIMATIONS (EXCEPT PRELOAD & HERO SECTION)
-   ========================================================================== */
-@media (max-width: 768px) {
-  /*
-   * Keep .intro-webgl-stage (Three.js 3D shatter preload) and
-   * .hero-modern (Hero title, image, and HUD animations) active.
-   *
-   * Remove scroll reveal delays, hidden states, and transforms across all
-   * other sections (About, Skills, Projects, Experience, Contact, SectionTap)
-   * so content loads instantly and remains visible without scroll lag.
-   */
-  .reveal,
-  .reveal-group .stagger-item,
-  .domain-card .skill-chip,
-  .project-card .skill-chip,
-  .project-card .project-metric,
-  .section-tap .section-tap__line,
-  .section-tap .section-tap__index,
-  .section-tap .section-tap__label,
-  .about-editorial__stats .editorial-stat,
-  .about-availability-card,
-  .experience-entry,
-  .contact-surface,
-  .blueprint-block {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-    animation: none !important;
-  }
-
-  .section-tap .section-tap__line {
-    transform: scaleX(1) !important;
-  }
 }
 
 /* 6. Subtle Desktop Hero 3D Mouse Parallax */

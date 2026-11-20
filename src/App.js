@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
 import IntroLoader from "./components/IntroLoader";
 import Navbar from "./components/Navbar";
@@ -10,13 +10,15 @@ import Experience from "./components/Experience";
 import Contact from "./components/Contact";
 
 export default function App() {
-  const [introComplete, setIntroComplete] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const hash = window.location.hash;
-    const isOtherSection = Boolean(hash && hash !== "#" && hash !== "#top");
-    const isScrolledDown = window.scrollY > 80;
-    return isOtherSection || isScrolledDown;
-  });
+  // Preload intro ALWAYS loads at first
+  const [introComplete, setIntroComplete] = useState(false);
+
+  useEffect(() => {
+    // Scroll to top immediately on mount so the intro and hero are front & center
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, []);
 
   return (
     <ThemeProvider>

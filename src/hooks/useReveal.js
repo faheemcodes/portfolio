@@ -1,26 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * useReveal — attaches an IntersectionObserver to a ref with a bottom
- * rootMargin inset (-16% from the bottom of the screen) on desktop.
- * On mobile devices (<= 768px), immediately marks visible to eliminate
- * scroll lag and delays outside of the Hero & Preload sections.
+ * useReveal — attaches an IntersectionObserver with a calibrated bottom inset
+ * (-24% of viewport) so animations trigger right as the section enters the user's
+ * primary line of sight, ensuring animations are clearly visible and never
+ * finish prematurely before the user scrolls to them.
  */
-export default function useReveal(threshold = 0.22, rootMargin = "0px 0px -16% 0px") {
+export default function useReveal(threshold = 0.15, rootMargin = "0px 0px -24% 0px") {
   const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(() => {
-    if (typeof window !== "undefined" && window.innerWidth <= 768) {
-      return true;
-    }
-    return false;
-  });
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth <= 768) {
-      setIsVisible(true);
-      return undefined;
-    }
-
     const node = ref.current;
     if (!node) return undefined;
 
