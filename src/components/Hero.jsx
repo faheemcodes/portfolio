@@ -43,16 +43,17 @@ export default function Hero({ introComplete }) {
       <div className="hero-corner hero-corner--tr">
         <a href="#work" className="hero-arrow-link" title="Explore Engineering Case Studies">
           <span className="hero-arrow-label mono">Explore Systems</span>
-          <span className="hero-arrow-line"></span>
           <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
+            className="hero-arrow-unified"
+            width="54"
+            height="14"
+            viewBox="0 0 54 14"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <path
-              d="M0 12H19M19 12L12 5M19 12L12 19"
+              d="M0 7H52M52 7L43.5 1.5M52 7L43.5 12.5"
               stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"

@@ -743,13 +743,14 @@ section {
 .hero-arrow-link {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: var(--text-primary);
-  transition: opacity 0.3s ease;
+  text-decoration: none;
+  transition: opacity 0.25s ease;
 }
 
 .hero-arrow-link:hover {
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .hero-arrow-label {
@@ -759,10 +760,15 @@ section {
   color: var(--text-secondary);
 }
 
-.hero-arrow-line {
-  width: 36px;
-  height: 1.5px;
-  background-color: currentColor;
+.hero-arrow-unified {
+  display: block;
+  flex-shrink: 0;
+  color: currentColor;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-arrow-link:hover .hero-arrow-unified {
+  transform: translateX(5px);
 }
 
 /* Center Composition */
@@ -2387,6 +2393,42 @@ section {
 
 .project-card__drawer {
   animation: drawerSlideDown 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ==========================================================================
+   MOBILE VIEW: DISABLE SCROLL ANIMATIONS (EXCEPT PRELOAD & HERO SECTION)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /*
+   * Keep .intro-webgl-stage (Three.js 3D shatter preload) and
+   * .hero-modern (Hero title, image, and HUD animations) active.
+   *
+   * Remove scroll reveal delays, hidden states, and transforms across all
+   * other sections (About, Skills, Projects, Experience, Contact, SectionTap)
+   * so content loads instantly and remains visible without scroll lag.
+   */
+  .reveal,
+  .reveal-group .stagger-item,
+  .domain-card .skill-chip,
+  .project-card .skill-chip,
+  .project-card .project-metric,
+  .section-tap .section-tap__line,
+  .section-tap .section-tap__index,
+  .section-tap .section-tap__label,
+  .about-editorial__stats .editorial-stat,
+  .about-availability-card,
+  .experience-entry,
+  .contact-surface,
+  .blueprint-block {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .section-tap .section-tap__line {
+    transform: scaleX(1) !important;
+  }
 }
 
 /* 6. Subtle Desktop Hero 3D Mouse Parallax */
