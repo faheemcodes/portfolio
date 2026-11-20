@@ -1,18 +1,39 @@
 import React from "react";
+import useReveal from "../hooks/useReveal";
 import { profile, heroMeta } from "../data/content";
 
 export default function About() {
+  const [leftRef, leftVisible] = useReveal(0.24);
+  const [rightRef, rightVisible] = useReveal(0.24);
+
   return (
     <section id="about" className="about-editorial">
       <div className="about-editorial__container">
-        
-        {/* Left Column: Huge typography and stats */}
-        <div className="about-editorial__left">
-          <h2 className="about-editorial__heading">THE<br/>VISION</h2>
-          
+        {/* Left Column: Heading and verified credentials */}
+        <div
+          ref={leftRef}
+          className={`about-editorial__left reveal-group ${
+            leftVisible ? "is-visible" : ""
+          }`}
+        >
+          <div className="about-editorial__eyebrow mono stagger-item" style={{ "--i": 0 }}>
+            <span className="status-indicator" />
+            <span>{profile.brand} &bull; Engineering Profile</span>
+          </div>
+
+          <h2 className="about-editorial__heading stagger-item" style={{ "--i": 1 }}>
+            ABOUT
+            <br />
+            ME
+          </h2>
+
           <div className="about-editorial__stats">
             {heroMeta.map((stat, i) => (
-              <div key={i} className="editorial-stat">
+              <div
+                key={i}
+                className="editorial-stat stagger-item"
+                style={{ "--i": i + 2 }}
+              >
                 <span className="editorial-stat__value">{stat.value}</span>
                 <span className="editorial-stat__label">{stat.label}</span>
               </div>
@@ -20,24 +41,65 @@ export default function About() {
           </div>
         </div>
 
-        {/* Right Column: Text content */}
-        <div className="about-editorial__right">
-          <p className="about-editorial__lead">
-            I am a {profile.role} focusing on crafting interactive digital experiences. 
-          </p>
-          <p className="about-editorial__body">
-            Bridging the gap between premium front-end aesthetics and robust back-end architecture, I build applications that are as visually striking as they are performant. My workflow revolves around modern toolchains, clean system design, and an obsessive attention to microscopic UI details.
-          </p>
-          <p className="about-editorial__body">
-            Currently in my final year of Software Engineering, I am actively taking on challenging projects that demand a high degree of technical polish and creative problem-solving.
+        {/* Right Column: Grounded, honest positioning */}
+        <div
+          ref={rightRef}
+          className={`about-editorial__right reveal-group ${
+            rightVisible ? "is-visible" : ""
+          }`}
+        >
+          <p className="about-editorial__lead stagger-item" style={{ "--i": 0 }}>
+            Hi, I'm <span className="about-name-accent">{profile.name}</span> — a software engineering student building reliable systems from first principles.
           </p>
 
-          <div className="about-editorial__signature">
-            <span className="sig-name">{profile.name}</span>
-            <span className="sig-title">{profile.status}</span>
+          <p className="about-editorial__body stagger-item" style={{ "--i": 1 }}>
+            I am currently in my final year of{" "}
+            <strong>BS Software Engineering at the University of Sindh, Jamshoro</strong>, based in Hyderabad, Sindh, Pakistan. I focus on backend architecture and clean frontend engineering, prioritizing clear data flow, relational database design, and defensive security over superficial abstractions.
+          </p>
+
+          <p className="about-editorial__body stagger-item" style={{ "--i": 2 }}>
+            Rather than relying on black-box scaffolding, I architect systems using{" "}
+            <strong>custom PHP MVC</strong>, <strong>MySQL</strong> (3NF relational schema design, PDO prepared statements, CSRF/XSS mitigations),{" "}
+            <strong>JavaScript (ES6+)</strong>, and <strong>React.js</strong>. Every module is written so I can explain and defend its trade-offs line-by-line in a technical review.
+          </p>
+
+          <div className="about-availability-card spotlight-card stagger-item" style={{ "--i": 3 }}>
+            <div className="about-availability-card__header mono">
+              <span className="status-indicator" />
+              <span>CURRENT STATUS &amp; AVAILABILITY</span>
+            </div>
+            <p className="about-availability-card__text">{profile.availability}</p>
+          </div>
+
+          <div className="about-editorial__actions stagger-item" style={{ "--i": 4 }}>
+            <a href="#work" className="btn-engineered btn-engineered--primary">
+              <span>Inspect Case Studies</span>
+              <span className="btn-engineered__arrow">↓</span>
+            </a>
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-engineered btn-engineered--ghost"
+            >
+              <span>GitHub (faheemcodes)</span>
+              <span className="btn-engineered__arrow">↗</span>
+            </a>
+            <a
+              href={`mailto:${profile.email}`}
+              className="btn-engineered btn-engineered--ghost"
+            >
+              <span>{profile.email}</span>
+            </a>
+          </div>
+
+          <div className="about-editorial__signature stagger-item" style={{ "--i": 5 }}>
+            <span className="sig-name">{profile.brand}</span>
+            <span className="sig-title">
+              {profile.name} — {profile.status} ({profile.institution})
+            </span>
           </div>
         </div>
-
       </div>
     </section>
   );

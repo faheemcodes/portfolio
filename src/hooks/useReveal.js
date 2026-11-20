@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * useReveal — attaches an IntersectionObserver to a ref and flips
- * `isVisible` once the element enters the viewport. Used to drive the
- * subtle .reveal / .is-visible class pair defined in theme.css.
+ * useReveal — attaches an IntersectionObserver to a ref with a bottom
+ * rootMargin inset (-16% from the bottom of the screen) so animations
+ * trigger only when the user actually scrolls the element comfortably into
+ * their line of sight—never hidden at the very bottom edge of the screen.
  */
-export default function useReveal(threshold = 0.15) {
+export default function useReveal(threshold = 0.22, rootMargin = "0px 0px -16% 0px") {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -27,12 +28,12 @@ export default function useReveal(threshold = 0.15) {
           }
         });
       },
-      { threshold }
+      { threshold, rootMargin }
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, rootMargin]);
 
   return [ref, isVisible];
 }
