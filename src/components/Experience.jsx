@@ -4,8 +4,8 @@ import useReveal from "../hooks/useReveal";
 import { experience, certifications } from "../data/content";
 
 export default function Experience() {
-  const [headRef, headVisible] = useReveal(0.24);
-  const [ref, isVisible] = useReveal(0.18);
+  const [headRef, headVisible] = useReveal();
+  const [ref, isVisible] = useReveal();
 
   const handleMouseMove = (e) => {
     const card = e.currentTarget;

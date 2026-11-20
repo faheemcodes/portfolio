@@ -4,7 +4,7 @@ import useReveal from "../hooks/useReveal";
 import { skillDomains } from "../data/content";
 
 function DomainCard({ domain, index }) {
-  const [ref, isVisible] = useReveal(0.22);
+  const [ref, isVisible] = useReveal();
 
   const handleMouseMove = (e) => {
     const card = e.currentTarget;
@@ -46,7 +46,7 @@ function DomainCard({ domain, index }) {
 }
 
 export default function Skills() {
-  const [headRef, headVisible] = useReveal(0.24);
+  const [headRef, headVisible] = useReveal();
 
   return (
     <section id="skills">

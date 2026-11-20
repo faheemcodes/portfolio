@@ -6,7 +6,7 @@ import useReveal from "../hooks/useReveal";
  * of each major section. Draws its line horizontally on scroll reveal.
  */
 export default function SectionTap({ index, label }) {
-  const [ref, isVisible] = useReveal(0.15);
+  const [ref, isVisible] = useReveal();
 
   return (
     <div

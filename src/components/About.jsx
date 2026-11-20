@@ -3,8 +3,8 @@ import useReveal from "../hooks/useReveal";
 import { profile, heroMeta } from "../data/content";
 
 export default function About() {
-  const [leftRef, leftVisible] = useReveal(0.24);
-  const [rightRef, rightVisible] = useReveal(0.24);
+  const [leftRef, leftVisible] = useReveal();
+  const [rightRef, rightVisible] = useReveal();
 
   return (
     <section id="about" className="about-editorial">

@@ -6,8 +6,8 @@ import { profile } from "../data/content";
  * Generates an offscreen 2D Canvas texture containing the obsidian intro screen,
  * subtle dot grid, and crisp centered "faheem.devlabs" typography.
  */
-function createIntroScreenTexture(width, height) {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+function createIntroScreenTexture(width, height, isMobile) {
+  const dpr = isMobile ? 1.25 : Math.min(window.devicePixelRatio || 1, 2);
   const canvas = document.createElement("canvas");
   canvas.width = Math.floor(width * dpr);
   canvas.height = Math.floor(height * dpr);
@@ -35,7 +35,7 @@ function createIntroScreenTexture(width, height) {
 
   // 3. Subtle Engineering Dot Matrix
   ctx.fillStyle = "rgba(255, 255, 255, 0.055)";
-  const step = 32;
+  const step = isMobile ? 40 : 32;
   for (let x = 16; x < width; x += step) {
     for (let y = 16; y < height; y += step) {
       ctx.fillRect(x, y, 1.2, 1.2);
@@ -44,7 +44,6 @@ function createIntroScreenTexture(width, height) {
 
   const cx = width / 2;
   const cy = height / 2;
-  const isMobile = width < 600;
 
   // 4. Eyebrow: FAHEEM AHMED SOOMRO
   ctx.textAlign = "center";
@@ -148,30 +147,31 @@ function clipPolygonToScreen(poly, hw, hh) {
 
 /**
  * Builds a realistic Radial Spiderweb Glass Impact Fracture:
- * - Impact point near the center
- * - 18 primary radial fracture rays shooting outward at irregular angles
- * - 7 concentric shockwave rings with jagged vertex jitter
- * - Inner impact core shatters into fine needle splinters; outer rings form large jagged glass plates
- * - Also returns a 3D LineSegments mesh of bright white/silver glass fracture cracks that flash on impact!
+ * - Adapts complexity for mobile vs desktop for optimal 60 FPS performance
+ * - Inner impact core shatters into sharp splinters; outer rings form large jagged plates
+ * - Returns extruded 3D shards and dynamic glowing fracture crack lines
  */
-function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
+function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat, isMobile) {
   const hw = viewW / 2;
   const hh = viewH / 2;
   const maxR = Math.hypot(hw, hh) * 1.25;
 
-  // Impact epicenter (slightly off-center right near the "." in faheem.devlabs)
+  // Impact epicenter (near the "." in faheem.devlabs)
   const impactX = viewW * 0.015;
   const impactY = viewH * 0.01;
 
-  const numRays = 18;
-  const ringFactors = [0.025, 0.065, 0.125, 0.21, 0.34, 0.52, 0.76, 1.08];
+  // Adaptive complexity: lightweight on mobile for instant calculation & 60fps
+  const numRays = isMobile ? 8 : 16;
+  const ringFactors = isMobile
+    ? [0.06, 0.22, 0.54, 1.05]
+    : [0.03, 0.08, 0.17, 0.30, 0.48, 0.74, 1.06];
   const numRings = ringFactors.length;
 
   // 1. Generate irregular radial ray base angles
   const baseAngles = [];
   const stepAngle = (Math.PI * 2) / numRays;
   for (let i = 0; i < numRays; i++) {
-    const jitter = (Math.random() - 0.5) * stepAngle * 0.42;
+    const jitter = (Math.random() - 0.5) * stepAngle * 0.38;
     baseAngles.push(i * stepAngle + jitter);
   }
 
@@ -181,9 +181,8 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
     const baseRadius = ringFactors[r] * maxR;
     const row = [];
     for (let s = 0; s < numRays; s++) {
-      // Slight bend along each radial crack line as it travels outward
-      const angleJitter = (Math.random() - 0.5) * stepAngle * 0.24;
-      const radJitter = baseRadius * (1 + (Math.random() - 0.5) * 0.22);
+      const angleJitter = (Math.random() - 0.5) * stepAngle * 0.22;
+      const radJitter = baseRadius * (1 + (Math.random() - 0.5) * 0.2);
       const a = baseAngles[s] + angleJitter;
       row.push(
         new THREE.Vector2(
@@ -204,7 +203,7 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
 
   const centerPt = new THREE.Vector2(impactX, impactY);
 
-  // Inner core ring (sharp triangular needle splinters radiating from the impact point)
+  // Inner core ring
   for (let s = 0; s < numRays; s++) {
     const nextS = (s + 1) % numRays;
     const p1 = ringVertices[0][s];
@@ -214,7 +213,7 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
     pushCrackEdge(p1, p2);
   }
 
-  // Concentric spiderweb rings (split quads diagonally or keep as jagged 4-sided glass shards)
+  // Concentric spiderweb rings
   for (let r = 0; r < numRings - 1; r++) {
     for (let s = 0; s < numRays; s++) {
       const nextS = (s + 1) % numRays;
@@ -226,8 +225,6 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
       pushCrackEdge(p00, p10);
       pushCrackEdge(p10, p11);
 
-      // Subdivide about 65% of ring cells into sharp triangular glass splinters
-      // and leave 35% as angular 4-cornered polygonal glass plates
       if ((r + s) % 3 !== 0) {
         if ((r + s) % 2 === 0) {
           rawPolys.push([p00, p10, p11]);
@@ -244,10 +241,10 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
     }
   }
 
-  // 3. Clip all polygons to the exact viewport rectangle & extrude into 3D glass shards
+  // 3. Clip all polygons to viewport & extrude into 3D glass shards
   const shards = [];
   const extrudeSettings = {
-    depth: 0.11,
+    depth: isMobile ? 0.05 : 0.09,
     bevelEnabled: false,
     steps: 1,
   };
@@ -256,7 +253,6 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
     const clipped = clipPolygonToScreen(rawPolys[i], hw, hh);
     if (clipped.length < 3) continue;
 
-    // Deduplicate near-identical vertices after clipping
     const cleanPts = [];
     for (let j = 0; j < clipped.length; j++) {
       const prev = cleanPts[cleanPts.length - 1];
@@ -272,7 +268,6 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
     }
     if (cleanPts.length < 3) continue;
 
-    // Compute polygon area to skip microscopic slivers
     let area2 = 0;
     let cx = 0;
     let cy = 0;
@@ -311,16 +306,13 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
     const mesh = new THREE.Mesh(geom, [frontMat, sideMat]);
     mesh.position.set(cx, cy, 0);
 
-    // Vector from impact epicenter to shard centroid
     const dx = cx - impactX;
     const dy = cy - impactY;
     const dist = Math.hypot(dx, dy);
     const normDist = Math.min(dist / Math.hypot(hw, hh), 1);
     const angle = Math.atan2(dy, dx);
 
-    // Physics: Shards closest to the hit point get blasted earliest;
-    // outer shards peel outward radially like heavy tempered glass plates
-    const radialSpeed = (2.1 + (1 - normDist) * 2.4 + Math.random() * 1.1) * 1.35;
+    const radialSpeed = (2.2 + (1 - normDist) * 2.5 + Math.random() * 1.0) * 1.4;
 
     shards.push({
       mesh,
@@ -328,18 +320,17 @@ function buildRadialImpactGlass(viewW, viewH, frontMat, sideMat) {
       originX: cx,
       originY: cy,
       normDist,
-      // Natural ripple wave delay from impact epicenter to outer frame
-      delay: normDist * 0.34 + Math.random() * 0.06,
+      delay: normDist * 0.28 + Math.random() * 0.05,
       velX: Math.cos(angle) * radialSpeed + dx * 1.15,
-      velY: Math.sin(angle) * radialSpeed + dy * 1.05 - 0.65,
-      velZ: (1 - normDist) * 3.2 + 1.0 + Math.random() * 1.8,
-      rotX: -Math.sin(angle) * (1.5 + Math.random() * 2.4),
-      rotY: Math.cos(angle) * (1.5 + Math.random() * 2.4),
-      rotZ: (Math.random() - 0.5) * 1.9,
+      velY: Math.sin(angle) * radialSpeed + dy * 1.05 - 0.55,
+      velZ: (1 - normDist) * 3.4 + 1.2 + Math.random() * 1.6,
+      rotX: -Math.sin(angle) * (1.6 + Math.random() * 2.2),
+      rotY: Math.cos(angle) * (1.6 + Math.random() * 2.2),
+      rotZ: (Math.random() - 0.5) * 1.8,
     });
   }
 
-  // Build glowing white/silver spiderweb crack lines overlay for the instant of impact
+  // Glowing white/silver spiderweb crack lines overlay
   const crackGeom = new THREE.BufferGeometry();
   crackGeom.setAttribute(
     "position",
@@ -365,13 +356,17 @@ export default function IntroLoader({ onComplete }) {
     const container = mountRef.current;
     if (!container) return;
 
+    let isFinished = false;
     const finishIntro = () => {
+      if (isFinished) return;
+      isFinished = true;
       setDone(true);
       if (onCompleteRef.current) onCompleteRef.current();
     };
 
     const width = window.innerWidth;
     const height = window.innerHeight;
+    const isMobile = width < 768;
 
     // 1. Scene & Perspective Camera
     const scene = new THREE.Scene();
@@ -383,13 +378,13 @@ export default function IntroLoader({ onComplete }) {
     const viewH = 2 * Math.tan(THREE.MathUtils.degToRad(fov / 2)) * cameraZ;
     const viewW = viewH * (width / height);
 
-    // 2. WebGL Renderer
+    // 2. WebGL Renderer (optimized for mobile)
     let renderer;
     try {
       renderer = new THREE.WebGLRenderer({
-        antialias: true,
+        antialias: !isMobile,
         alpha: true,
-        powerPreference: "high-performance",
+        powerPreference: isMobile ? "default" : "high-performance",
       });
     } catch (e) {
       finishIntro();
@@ -397,7 +392,9 @@ export default function IntroLoader({ onComplete }) {
     }
 
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(
+      isMobile ? 1.25 : Math.min(window.devicePixelRatio || 1, 2)
+    );
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
@@ -414,7 +411,7 @@ export default function IntroLoader({ onComplete }) {
     scene.add(impactPointLight);
 
     // 4. Screen Texture & Glass Materials
-    const screenTexture = createIntroScreenTexture(width, height);
+    const screenTexture = createIntroScreenTexture(width, height, isMobile);
 
     const frontMat = new THREE.MeshStandardMaterial({
       map: screenTexture,
@@ -424,7 +421,6 @@ export default function IntroLoader({ onComplete }) {
       opacity: 1,
     });
 
-    // Frosted silver/champagne glass fracture thickness edge
     const sideMat = new THREE.MeshStandardMaterial({
       color: 0xf3efe6,
       emissive: 0x5c5346,
@@ -436,21 +432,20 @@ export default function IntroLoader({ onComplete }) {
 
     // 5. Build Radial Impact Spiderweb Shards + Crack Lines
     const { shards, crackLinesMesh, crackGeom, crackMat } =
-      buildRadialImpactGlass(viewW, viewH, frontMat, sideMat);
+      buildRadialImpactGlass(viewW, viewH, frontMat, sideMat, isMobile);
 
     const shardGroup = new THREE.Group();
     shards.forEach((s) => shardGroup.add(s.mesh));
     scene.add(shardGroup);
     scene.add(crackLinesMesh);
 
-    // 6. Natural Cinematic Glass Impact Timeline
-    // 0.00s - 1.05s: Calm, intact glass screen
-    // 1.05s - 2.05s: Strike & Tension! Spiderweb cracks spread outward from the hit point and hold under tension
-    // 2.05s - 4.10s: Graceful 3D slow-motion glass break & drift away from screen
-    const IMPACT_TIME = 1.05;
-    const CRACK_HOLD = 1.0;
+    // 6. Fast, responsive cinematic timeline
+    // Mobile: 0.45s calm -> 0.45s strike/cracks -> 1.15s 3D shatter (2.05s total!)
+    // Desktop: 0.75s calm -> 0.65s strike/cracks -> 1.65s 3D shatter (3.05s total!)
+    const IMPACT_TIME = isMobile ? 0.45 : 0.75;
+    const CRACK_HOLD = isMobile ? 0.45 : 0.65;
     const SHATTER_TIME = IMPACT_TIME + CRACK_HOLD;
-    const FLY_DURATION = 2.05;
+    const FLY_DURATION = isMobile ? 1.15 : 1.65;
     const TOTAL_TIME = SHATTER_TIME + FLY_DURATION;
 
     const startTime = performance.now();
@@ -461,7 +456,14 @@ export default function IntroLoader({ onComplete }) {
       t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const easeInQuad = (t) => t * t;
 
+    // Instant Skip on Click / Tap
+    const handleSkip = () => {
+      finishIntro();
+    };
+    container.addEventListener("pointerdown", handleSkip, { passive: true });
+
     const animate = (now) => {
+      if (isFinished) return;
       const elapsed = (now - startTime) / 1000;
 
       if (elapsed >= TOTAL_TIME) {
@@ -470,50 +472,47 @@ export default function IntroLoader({ onComplete }) {
       }
 
       if (elapsed >= IMPACT_TIME) {
-        // Phase A: Spiderweb Crack Spread & Tension Hold (1.05s -> 2.05s)
+        // Phase A: Spiderweb Crack Spread & Tension Hold
         const crackT = Math.min((elapsed - IMPACT_TIME) / CRACK_HOLD, 1);
-        // Cracks spread over the first 60% of CRACK_HOLD, then hold taut for the remaining 40%
         const spreadProgress = Math.min(crackT / 0.62, 1);
         const crackEase = easeOutCubic(spreadProgress);
 
-        if (elapsed < SHATTER_TIME + 0.25) {
+        if (elapsed < SHATTER_TIME + 0.22) {
           crackMat.opacity =
             elapsed < SHATTER_TIME
               ? Math.min(spreadProgress * 1.4, 0.85)
-              : Math.max(0.85 * (1 - (elapsed - SHATTER_TIME) / 0.25), 0);
+              : Math.max(0.85 * (1 - (elapsed - SHATTER_TIME) / 0.22), 0);
           crackLinesMesh.scale.setScalar(0.18 + 0.82 * crackEase);
           impactPointLight.intensity = 5.0 * Math.sin(crackT * Math.PI);
         } else {
           crackMat.opacity = 0;
         }
 
-        if (elapsed > SHATTER_TIME + 0.3) {
+        if (elapsed > SHATTER_TIME + 0.2) {
           container.style.pointerEvents = "none";
         }
 
         shards.forEach((s) => {
-          // Cracks reach inner shards first, then travel to outer glass edges
           const localCrack = Math.max(
             0,
             Math.min((spreadProgress - s.normDist * 0.55) / 0.45, 1)
           );
           const localCrackEase = easeOutCubic(localCrack);
 
-          // Physical glass strike dent: center shards buckle slightly & catch the light
-          const dentZ = (1 - s.normDist) * 0.24 * localCrackEase;
-          let x = s.originX * (1 + localCrackEase * 0.022);
-          let y = s.originY * (1 + localCrackEase * 0.022);
+          const dentZ = (1 - s.normDist) * 0.22 * localCrackEase;
+          let x = s.originX * (1 + localCrackEase * 0.02);
+          let y = s.originY * (1 + localCrackEase * 0.02);
           let z = dentZ;
-          let rx = s.rotX * 0.045 * localCrackEase;
-          let ry = s.rotY * 0.045 * localCrackEase;
+          let rx = s.rotX * 0.04 * localCrackEase;
+          let ry = s.rotY * 0.04 * localCrackEase;
           let rz = s.rotZ * 0.03 * localCrackEase;
 
-          // Phase B: Natural, weighted 3D release & drift away from screen
+          // Phase B: 3D release & drift away from screen
           const flyElapsed = elapsed - SHATTER_TIME - s.delay;
           if (flyElapsed > 0) {
-            const flyT = Math.min(flyElapsed / (FLY_DURATION - 0.35), 1);
+            const flyT = Math.min(flyElapsed / (FLY_DURATION - 0.3), 1);
             const drift = easeInOutCubic(flyT);
-            const gravityDrop = easeInQuad(flyT) * 1.35;
+            const gravityDrop = easeInQuad(flyT) * 1.25;
 
             x += s.velX * drift;
             y += s.velY * drift - gravityDrop;
@@ -527,8 +526,8 @@ export default function IntroLoader({ onComplete }) {
           s.mesh.rotation.set(rx, ry, rz);
         });
 
-        // Smooth fade out at the end of the drift
-        const fadeStart = SHATTER_TIME + FLY_DURATION * 0.68;
+        // Smooth fade out at the end
+        const fadeStart = SHATTER_TIME + FLY_DURATION * 0.65;
         if (elapsed > fadeStart) {
           const fadeT = Math.min(
             (elapsed - fadeStart) / (TOTAL_TIME - fadeStart),
@@ -546,6 +545,7 @@ export default function IntroLoader({ onComplete }) {
     rafId = requestAnimationFrame(animate);
 
     return () => {
+      container.removeEventListener("pointerdown", handleSkip);
       if (rafId) cancelAnimationFrame(rafId);
       shards.forEach((s) => s.geom.dispose());
       crackGeom.dispose();
@@ -563,10 +563,14 @@ export default function IntroLoader({ onComplete }) {
   if (done) return null;
 
   return (
-    <div
+    <aside
       ref={mountRef}
       className="intro-webgl-stage"
-      aria-hidden="true"
-    />
+      aria-label="3D Glass Shatter Intro"
+    >
+      <div className="intro-skip-hint mono" aria-hidden="true">
+        Tap to enter &rarr;
+      </div>
+    </aside>
   );
 }

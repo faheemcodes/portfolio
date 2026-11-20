@@ -4,7 +4,7 @@ import useReveal from "../hooks/useReveal";
 import { caseStudies } from "../data/content";
 
 function CaseStudyCard({ study, index }) {
-  const [ref, isVisible] = useReveal(0.2);
+  const [ref, isVisible] = useReveal();
   const [expanded, setExpanded] = useState(false);
   const isLive = Boolean(study.liveDemo);
 
@@ -194,7 +194,7 @@ function CaseStudyCard({ study, index }) {
 }
 
 export default function Projects() {
-  const [headRef, headVisible] = useReveal(0.24);
+  const [headRef, headVisible] = useReveal();
 
   return (
     <section id="work" className="section-projects">

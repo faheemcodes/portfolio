@@ -97,11 +97,17 @@ export default function Hero({ introComplete }) {
 
         <div className="hero-image-wrapper">
           <img
-            src="/images/cinematic.png"
+            src="/images/cinematic.jpg"
             alt="Faheem Ahmed Soomro"
             className="hero-profile-image"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
             onError={(e) => {
-              if (!e.target.dataset.triedFallback) {
+              if (!e.target.dataset.triedPng) {
+                e.target.dataset.triedPng = "true";
+                e.target.src = "/images/cinematic.png";
+              } else if (!e.target.dataset.triedFallback) {
                 e.target.dataset.triedFallback = "true";
                 e.target.src = "/images/profile.png";
               } else {

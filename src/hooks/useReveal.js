@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * useReveal — attaches an IntersectionObserver with a calibrated bottom inset
- * (-24% of viewport) so animations trigger right as the section enters the user's
- * primary line of sight, ensuring animations are clearly visible and never
- * finish prematurely before the user scrolls to them.
+ * useReveal — attaches an IntersectionObserver with responsive threshold and rootMargin:
+ * - On Mobile (<= 768px): Uses lighter threshold (0.08) and minimal bottom inset (-8%)
+ *   so cards and headlines animate in naturally as you read, with zero pop-in delay.
+ * - On Desktop: Uses calibrated inset (-16%) for a crisp, synchronized cascade.
  */
-export default function useReveal(threshold = 0.15, rootMargin = "0px 0px -24% 0px") {
+export default function useReveal(threshold, rootMargin) {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -19,6 +19,10 @@ export default function useReveal(threshold = 0.15, rootMargin = "0px 0px -24% 0
       return undefined;
     }
 
+    const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+    const finalThreshold = threshold !== undefined ? threshold : isMobile ? 0.08 : 0.15;
+    const finalRootMargin = rootMargin !== undefined ? rootMargin : isMobile ? "0px 0px -8% 0px" : "0px 0px -16% 0px";
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -28,7 +32,7 @@ export default function useReveal(threshold = 0.15, rootMargin = "0px 0px -24% 0
           }
         });
       },
-      { threshold, rootMargin }
+      { threshold: finalThreshold, rootMargin: finalRootMargin }
     );
 
     observer.observe(node);

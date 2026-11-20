@@ -6,7 +6,7 @@ import { profile } from "../data/content";
 export default function Contact() {
   const year = new Date().getFullYear();
   const [copied, setCopied] = useState(false);
-  const [panelRef, panelVisible] = useReveal(0.24);
+  const [panelRef, panelVisible] = useReveal();
 
   const handleCopyEmail = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
